@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Train Times</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+
+
+<!--Css-->
+<style>
+#headerDiv{
+    width: 90%;
+    height: 300px;
+    background: #993300;
+    color: white;
+    text-align: center;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.tableHeading{
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 90%;
+    color: white;
+    height: 30px;
+    background: blue;
+    font-size: 20px;
+}
+
+table{
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 90%;
+    border: 1px solid black;
+    text-align: center;
+
+
+}
+
+tr{
+    width: 100%;
+}
+
+.inputBox{
+    width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+    height: 40px;
+}
+
+#formInput{
+    width: 89.7%;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 500px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+#submitButton{
+    height: 35px;
+    width: 120px;
+    border-radius: 5%;
+    background: linear-gradient(black, white);
+    font-size: 20px;
+    color: white;
+    font-family: serif;
+    margin-top: 5px;
+    border: 2px solid red;
+}
+
+</style>
+
+</head>
+<body>
+    <div id="headerDiv"> 
+        <h1> Anytime is train time </h1>
+        <h2> Train Noises</h2>
+    </div>
+
+
+    <div class="tableHeading"> 
+        <p> Current Train Schedule</p>
+    </div>
+
+    <table> 
+        <th> Destination</th>
+        <th> Minutes Away</th>
+        <th> TrainName</th>
+        <th> Frequency</th>
+        <th> NextTrain</th>
+        <tr id="tabRow"> 
+            
+        </tr>
+    </table>
+
+<br>
+
+
+<div class="tableHeading">
+    <p> Add A Train </p>
+</div>
+
+<form id="formInput">
+
+<p> Train Name</p>
+<input type="text" class="inputBox" id="trainName">
+<br>
+<p> Destination</p>
+<input type="text" class="inputBox" id="destination">
+<br>
+<p> First Train Time (HH,mm) military time </p>
+<input type="text" class="inputBox" id="time">
+<br>
+<p> Frequency (mins)</p>
+<input type="text" class="inputBox" id="frequency">
+
+
+<input type="submit" id="submitButton">
+
+</form>
+
+
+   
+  <!-- Added Moment JS -->
+  <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+  <script>
+
+var config = {
+    apiKey: "AIzaSyAoOnR9Gyg0CwsgXzpmnm-cCOJSLSiy-Ws",
+    authDomain: "traintimes-c46be.firebaseapp.com",
+    databaseURL: "https://traintimes-c46be.firebaseio.com",
+    projectId: "traintimes-c46be",
+    storageBucket: "traintimes-c46be.appspot.com",
+    messagingSenderId: "921296475560"
+  };
+  firebase.initializeApp(config);
+
+
+
+
+
+
+  var trainName = $("#trainName");
+  var destination = $("#destination");
+  var time = $("#time");
+  var frequency = $("#frequency");
+  var SubmitBtn = $("#submitButton");
+
+
+
+//time Variables
+ // time.format("HH:mm")
+
+ // var dayLength = 2400
+
+ // dayLength.format("HH:mm")
+
+  // var timeLeft = (dayLength - time)
+
+ //  var minsAway = (timeLeft % frequency)
+
+ //  append minsAway
+
+// moment() + minsAway = nextTrain
+
+  
+
+
+
+
+
+  SubmitBtn.on("click", function(){
+    
+    var FbReference = firebase.database().ref();
+
+    FbReference.child("TrainName").set(trainName.val());
+    FbReference.child("Destination").set(destination.val());
+    FbReference.child("Time").set(time.val());
+    FbReference.child("frequency").set(frequency.val());
+
+    //
+    FbReference.on("child_added", function(snapshot){
+        
+        var tabDat = $("<td>")
+
+        tabDat.append(snapshot.val())
+
+        $("#tabRow").append(tabDat);
+
+        // var tabRow = $("<tr>")
+        // tabRow.append(tabDat);
+     // tabRow.attr("class", "newTabRow") <- unimportant
+     // $("table").append(tabRow)
+     //^ all bits of TD were being appended in one column
+
+
+
+
+    })
+
+
+
+
+    return false;
+  })
+
+
+
+
+
+  </script>
+</body>
+</html>
